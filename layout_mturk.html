@@ -1,0 +1,216 @@
+<!-- For help on using this template, see the blog post: https://blog.mturk.com/editing-the-survey-link-project-template-in-the-ui-7c75285105fb#.py7towsdx --><!-- HIT template: SurveyLink-v3.0 --><!-- The following snippet enables the 'responsive' behavior on smaller screens -->
+<meta content="width=device-width,initial-scale=1" name="viewport" />
+<h1>Instructions</h1>
+
+<p>This task investigates the capability of AI to generate good reading comprehension questions.<br />
+Imagine you are reading the following article where the first few sentences go like this:</p>
+
+<div><br />
+<span class="highlight-anchor">1 The stock market's woes spooked currency traders but prompted a quiet little party among bond investors.</span><br />
+<span class="highlight-answer">2 Prices of long-term Treasury bonds moved inversely to the stock market as investors sought safety amid growing evidence the economy is weakening.</span></div>
+
+<p><br />
+At this point, you may want to ask the question: <span class="bold-question">How much did the prices of long-term Treasury bonds increase?</span> This question is answered in sentence 7:</p>
+
+<div><br />
+<span class="highlight-anchor-answer">7 At its strongest, the Treasury's benchmark 30-year bond rose more than a point, or more than $10 for each $1,000 face amount.</span></div>
+
+<p><br />
+Indeed, we can view sentences in a document as answers to questions that come from the readers, it&rsquo;s just that these questions are not explicitly stated. The goal of the AI model is to recover these questions and ask them explicitly. Having these questions will be helpful for readers who have trouble understanding the document.<br />
+<br />
+Clearly, the question above is a good one: it is anchored in the second sentence, not overly generic, and sentence 7 is an answer that fits right in. But not all AI-generated questions are as good; consider this one: <span class="bold-question">How many points did Treasury&rsquo;s benchmark 30-year bonds increase?</span> This question is still answered by sentence 7, but it is odd to imagine a reader coming up with this question from sentence 2, because the notion of &ldquo;points&rdquo; (and maybe even &ldquo;30-year&rdquo;) has not been introduced and only very expert readers would be familiar with this! On the other hand, we also don&rsquo;t want questions like, What happened next? This question is way too generic to be useful for a puzzled reader trying to understand the text.<br />
+<br />
+To define a few terms: we call sentence 2 <span class="highlight-anchor">the anchor sentence</span>, i.e., where the questions could reasonably arise from, and sentence 7 is the <span class="highlight-answer">answer sentence</span>. <span class="highlight-line">Sentences before the anchor </span>form the question context. <span class="highlight-between">Sentences between the anchor and answer are faded as they should not provide extra information for the question.</span><br />
+<br />
+We invite you to judge the quality of the questions based on the following criteria:</p>
+
+<ol type="1">
+	<li><b>Does the question make sense?</b> Examples of bad questions that don&rsquo;t make sense are: questions that are badly formed (e.g., contain too many language errors or aren&rsquo;t complete), or questions that are irrelevant to the article.
+
+	<ol type="a">
+		<li>If the answer to this is &ldquo;NO&rdquo;, then the rest of the annotation should be skipped.</li>
+	</ol>
+	</li>
+	<li><b>Does the &ldquo;answer sentence&rdquo; actually answer this question?</b>There are three possibilities here:
+	<ol type="a">
+		<li>Best case: the &ldquo;answer sentence&rdquo;&rsquo;s main content answers this question. Note that if the answer is provided in multiple sentences and the &ldquo;answer sentence&rdquo; is only one of them, that is ok.</li>
+		<li>Unfocused case: the &ldquo;answer sentence&rdquo; isn&rsquo;t really about answering the question, but some parts of the answer sentence do answer the question. E.g., Sentence 2 isn&rsquo;t about the evidence of a weakening economy, hence it is an &ldquo;unfocused&rdquo; answer to the question &ldquo;Is the economy weakening?&rdquo;</li>
+		<li>Not-an-answer case: the &ldquo;answer sentence&rdquo; is not answering the question.</li>
+	</ol>
+	</li>
+	<li><b>Does the question contain new concepts that a reader would be hard to come up with? (By &ldquo;new concepts&rdquo;, we mean concepts that cannot be easily inferred by world knowledge from existing ones).</b>There are several possibilities here as well:
+	<ol type="a">
+		<li>This question does not contain new concepts.</li>
+		<li>Answer leakage: The question contains new concepts that are in the answer sentence AND not in the anchor sentence or the question context. &ldquo;How many points did Treasury&rsquo;s benchmark 30-year bonds increase?&rdquo; would be a question that leaks new concepts in the answer sentence.</li>
+		<li>Context leakage: The question contains new concepts that are <b>not</b> in the anchor sentence or the question context, but can be found in other parts of the document.</li>
+		<li>Hallucination: The question contains new concepts not in the article.</li>
+	</ol>
+	</li>
+	<li><b>Is this question grounded well in the anchor sentence?</b>Here we ask you to judge from a scale:
+	<ol type="a">
+		<li>Key parts of the question is grounded in the anchor sentence</li>
+		<li>Some parts of the question is grounded in the anchor sentence</li>
+		<li>The question is not grounded in the anchor sentence</li>
+		<li>The question is too generic and can rise from many sentences</li>
+	</ol>
+	</li>
+</ol>
+
+<p><span class="highlight-anchor-answer">Please finish all subquestions and questions in this page to get paid. Note that once all subquestions for one questions are answered, the question will be marked lightblue. This way you can know which question you haven't finished yet.</span></p>
+
+<div class="row" id="workContent">
+<div class="col-xs-12 col-md-6 col-md-offset-3"><!-- Content for Worker -->
+<table class="table table-condensed table-bordered">
+	<colgroup>
+		<col class="col-xs-4 col-md-4" />
+		<col class="col-xs-8 col-md-8" />
+	</colgroup>
+	<tbody>
+		<tr>
+			<td><label>Survey link:</label></td>
+			<td><a href="https://qgeneval.herokuapp.com/id=${essay_id}">https://qgeneval.herokuapp.com/id=${essay_id}</a></td>
+		</tr>
+	</tbody>
+</table>
+<!-- End Content for Worker --><!-- Input from Worker -->
+
+<div class="form-group"><label for="surveycode">Provide the survey code here:</label> <input class="form-control" id="surveycode" name="surveycode" placeholder="e.g. 123456" required="" type="text" /></div>
+<!-- End input from Worker --></div>
+</div>
+<!-- End Survey Link Layout --><!-- Please note that Bootstrap CSS/JS and JQuery are 3rd party libraries that may update their url/code at any time. Amazon Mechanical Turk (MTurk) is including these libraries as a default option for you, but is not responsible for any changes to the external libraries --><!-- External CSS references -->
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" integrity="sha384-IS73LIqjtYesmURkDE9MXKbXqYA8rvKEp/ghicjem7Vc3mGRdQRptJSz60tvrB6+" rel="stylesheet" /><!-- Open internal style sheet -->
+<style type="text/css">#collapseTrigger{
+  color:#fff;
+  display: block;
+  text-decoration: none;
+}
+#submitButton{
+  white-space: normal;
+}
+.image{
+  margin-bottom: 15px; 
+}
+/* CSS for breaking long words/urls */
+.dont-break-out {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+      body {
+        font-family: Arial, sans-serif;
+      }
+        h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #333333;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    font-size: normal;
+    /*font-size: 18px;
+    color: #333333;
+    line-height: 1.5;
+    margin-bottom: 15px;*/
+  }
+
+  .highlight-between {
+    font-weight: bold;
+    background-color: #adcbe3;
+    box-shadow: 0px 0px 10px #adcbe3;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.5;
+  }
+
+  .highlight-anchor-answer {
+    font-weight: bold;
+    background-color: #ffeead;
+    box-shadow: 0px 0px 15px #ffeead;
+    transition: all 0.2s ease-in-out;  
+    text-decoration: underline;
+  }
+  .highlight-anchor{
+    font-weight: bold;
+    background-color: #ffeead;
+    box-shadow: 0px 0px 15px #ffeead;
+    transition: all 0.2s ease-in-out;  
+    text-decoration: underline;
+  }
+  .highlight-answer {
+    font-weight: bold;
+    background-color: #f6abb6;
+    box-shadow: 0px 0px 10px #f6abb6;
+    transition: all 0.2s ease-in-out;  
+  }
+  .bold-question {
+    font-weight: bold;
+  }
+  .highlight-line {
+  font-weight: bold;
+  background-color: #adcbe3;
+  box-shadow: 0px 0px 10px #adcbe3;
+  transition: all 0.2s ease-in-out;
+}
+  #go-back {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  #go-back:hover, #go-back:focus {
+      background-color: #0d8ae2;
+  }
+</style>
+<!-- Close internal style sheet --><!-- External JS references --><script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" integrity="sha384-s1ITto93iSMDxlp/79qhWHi+LsIi9Gx6yL+cOKDuymvihkfol83TYbLbOw+W/wv4" crossorigin="anonymous"></script><!-- Open internal javascript --><script>
+  $(document).ready(function() {
+    // Instructions expand/collapse
+    var content = $('#instructionBody');
+    var trigger = $('#collapseTrigger');
+    content.hide();
+    $('.collapse-text').text('(Click to expand)');
+    trigger.click(function(){
+      content.toggle();
+      var isVisible = content.is(':visible');
+      if(isVisible){
+        $('.collapse-text').text('(Click to collapse)');
+      }else{
+        $('.collapse-text').text('(Click to expand)');
+      }
+    });
+    // end expand/collapse
+  });
+</script><!-- Close internal javascript -->

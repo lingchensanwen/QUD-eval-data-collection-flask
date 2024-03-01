@@ -1,0 +1,14 @@
+<h2>Override Answer</h2>
+<form action="{{ url_for('override_answer') }}" method="POST">
+  <label for="override_question">Override question:</label>
+  <input type="text" name="override_question" id="override_question">
+  <br>
+  <label for="override_criteria">Override criteria:</label>
+  <input type="text" name="override_criteria" id="override_criteria">
+  <br>
+  <label for="override_result">Override result:</label>
+  <input type="text" name="override_result" id="override_result">
+  <br>
+  <input type="hidden" name="survey_code" id="survey_code" value="{{ survey_code }}">
+  <input type="submit" value="Override">
+</form>

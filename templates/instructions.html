@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+  <head>
+    <title>Reading Comprehension Question Generation - Instructions</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+        h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 20px;
+  }
+    .no-bullet {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .no-bullet li:before {
+    content: "•";
+    margin-right: 0.5em;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #333333;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    font-size: normal;
+    /*font-size: 18px;
+    color: #333333;
+    line-height: 1.5;
+    margin-bottom: 15px;*/
+  }
+
+  .highlight-between {
+    font-weight: bold;
+    background-color: #adcbe3;
+    box-shadow: 0px 0px 10px #adcbe3;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.5;
+  }
+
+  .highlight-anchor-answer {
+    font-weight: bold;
+    background-color: #ffeead;
+    box-shadow: 0px 0px 15px #ffeead;
+    transition: all 0.2s ease-in-out;  
+    text-decoration: underline;
+  }
+  .highlight-anchor{
+    font-weight: bold;
+    background-color: #ffeead;
+    box-shadow: 0px 0px 15px #ffeead;
+    transition: all 0.2s ease-in-out;  
+    text-decoration: underline;
+  }
+  .highlight-answer {
+    font-weight: bold;
+    background-color: #f6abb6;
+    box-shadow: 0px 0px 10px #f6abb6;
+    transition: all 0.2s ease-in-out;  
+  }
+  .bold-question {
+    font-weight: bold;
+    font-style: italic;
+  }
+  .highlight-line {
+  font-weight: bold;
+  background-color: #adcbe3;
+  box-shadow: 0px 0px 10px #adcbe3;
+  transition: all 0.2s ease-in-out;
+}
+  #go-back {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  #go-back:hover, #go-back:focus {
+      background-color: #0d8ae2;
+  }
+  .question-highlight {
+      background-color: lightblue;
+  }
+</style>
+</head>
+  <body>
+    <h1>Instructions</h1>
+    <button id="go-back" onclick="location.href='/';">Go Back to Annotation</button>
+    This task investigates the capability of AI to generate good reading comprehension questions.
+    <br>Imagine you are reading the following article where the first few sentences go like this:
+<div>
+  <br><span class="highlight-anchor">1 The stock market's woes spooked currency traders but prompted a quiet little party among bond investors.</span>
+  <br><span class="highlight-answer">2 Prices of long-term Treasury bonds moved inversely to the stock market as investors sought safety amid growing evidence the economy is weakening.</span>
+</div>
+
+<br>At this point, you may want to ask the question: <span class="bold-question">How much did the prices of long-term Treasury bonds increase?</span> This question is answered in sentence 7:
+
+<div>
+  <br><span class="highlight-anchor-answer"> 7 At its strongest, the Treasury's benchmark 30-year bond rose more than a point, or more than $10 for each $1,000 face amount.</span>
+</div>
+
+<br>Indeed, we can view sentences in a document as answers to questions that come from the readers, it’s just that these questions are not explicitly stated. The goal of the AI model is to <b>recover</b> these questions and ask them explicitly. Having these questions will be helpful for readers who have trouble understanding the document.
+
+<br>
+
+<br>Clearly, the question above is a good one: it is anchored in the second sentence, not overly generic, and sentence 7 is an answer that fits right in. But not all AI-generated questions are as good; consider this one: <span class="bold-question">How many points did Treasury’s benchmark 30-year bonds increase?</span> This question is still answered by sentence 7, but it is odd to imagine a reader coming up with this question from sentence 2, because the notion of “points” (and maybe even “30-year”) has not been introduced and only very expert readers would be familiar with this! On the other hand, we also don’t want questions like, <span class="bold-question">What happened next?</span> This question is way too generic to be useful for a puzzled reader trying to understand the text.
+
+<br>
+
+<br>To define a few terms: we call sentence 2 <span class ="highlight-anchor">the anchor sentence</span>, i.e., where the questions could reasonably arise from, and sentence 7 is the <span class ="highlight-answer">answer sentence</span>. <span class="highlight-line">Sentences before the anchor </span>form the question context. <span class="highlight-between">Sentences between the anchor and answer are faded as they should not provide extra information for the question.</span> 
+
+<br>
+
+<br>We invite you to judge the quality of the questions based on the following criteria:
+
+<ol type="1">
+    <li><b>Is this question make sense? </b>
+    <ol type="a">
+      <li>Yes</li>
+      <li>No - Examples of really bad questions that don’t make sense are:</li> 
+      <ul class="no-bullet">
+      <li>Bad language (grammar errors, incomplete)</li>
+      <li>Irrelevant to the article (e.g., peace talks in article vs. climate change in question)</li>
+      <li>Straight off contradiction or too much hallucination</li>
+    </ul>
+  </ol>
+  <b> If the answer to this is “NO”, then the rest of the annotation should be skipped. </b>
+  </li>
+
+  <br>
+
+  <li><b>Does the “answer sentence” actually answer this question?</b>There are three possibilities here:</li>
+  <ol type="a">
+  <li>
+    Explicit and direct answer: the “answer sentence”’s main content answers this question. Note that if the answer is provided in multiple sentences and the “answer sentence” is only one of them, that is ok. 
+  </li>
+  <li>
+  Unfocused answer: the “answer sentence” isn’t really about answering the question, but some parts of the answer sentence answer the question or the answer could be inferred.
+E.g., Sentence 2 isn’t about the evidence of a weakening economy, hence it is an “unfocused” answer to the question “How is the economy?” anchored in sentence 1.
+  </li>
+  <li>
+  Not-an-answer: the “answer sentence” is not answering the question.
+  </li>
+  </ol>
+
+  <br>
+
+  <li><b>Does the question contain new concepts that a reader would be hard to come up with? (By “new concepts”, we mean concepts that cannot be easily inferred by world knowledge from existing ones).</b>There are several possibilities here as well:</li>
+  <ol type="a">
+  <li>
+    This question does not contain new concepts.
+  </li>
+  <li>
+  Answer leakage: The question contains new concepts that are in the answer sentence AND not in the anchor sentence or the question context. “How many points did Treasury’s benchmark 30-year bonds increase?” would be a question that leaks new concepts in the answer sentence: “30-year bonds” would not be a concept that most people would automatically jump to.
+  </li>
+  <li>
+  Hallucination: The question contains new concepts. This includes:
+  <ul class="no-bullet">
+    <li>Concepts not in the article.</li>
+    <li>The question contains new concepts that are not in the anchor sentence or the question context, but can be found later in the document.</li>
+  </ul>
+  </li>
+  </ol>
+
+  <br>
+
+  <li><b>Is this question grounded well in the anchor sentence?</b>Here we ask you to judge from a scale:</li>
+  <ol type="a">
+  <li>
+    The question is fully grounded in the anchor sentence
+  </li>
+  <li>
+  Some parts of the question is grounded in the anchor sentence
+  </li>
+  <li>
+  The question is not at all grounded in the anchor sentence
+  </li>
+  </ol>
+  As an example, given the anchor “U.S. exports of nuclear material cannot be adequately traced from country to country, according to a congressional report”, the question “What does the report say is the reason for the export ban” is only partially grounded, because although “the report” was mentioned, “export ban” was not.
+<br>
+<br>
+
+ <li><b>Extra issues</b></li>
+    <ol type="a">
+      <li> Redundant question: question already answered in anchor</li>
+      <li>Question too generic to be informative/can be asked anywhere in the document</li>
+      <li>Anything else</li>
+    </ol>
+
+</ol>
+<br><span class="highlight-anchor-answer">Once all criteria for one question are answered, <span class="question-highlight"> the question will be marked lightblue</span>. This way you can know which question you haven't finished yet.</span>
+
+</body>
+</html>

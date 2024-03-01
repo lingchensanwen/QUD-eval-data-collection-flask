@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Compare Rows</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      label {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+
+      input[type="text"] {
+        width: 300px;
+        height: 30px;
+        font-size: 1.2em;
+        margin-bottom: 20px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button[type="submit"] {
+        width: 150px;
+        height: 40px;
+        font-size: 1.2em;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #3e8e41;
+      }
+
+      #result {
+        display: none;
+        margin-top: 20px;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      th {
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px;
+      }
+
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Compare Rows</h1>
+    <form method="POST">
+      <label for="survey_code_1">Survey Code 1:</label>
+      <input type="text" id="survey_code_1" name="survey_code_1" required>
+      <label for="survey_code_2">Survey Code 2:</label>
+      <input type="text" id="survey_code_2" name="survey_code_2" required>
+      <button type="submit">Compare</button>
+    </form>
+    <div id="result">
+      <h2>Results:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Answer 1</th>
+            <th>Answer 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for question, df in question_dict.items() %}
+          <tr>
+            <td>{{ question }}</td>
+            <td>{{ df.iloc[0][0] }}</td>
+            <td>{{ df.iloc[0][1] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button onclick="hideResult()">Hide Results</button>
+    </div>
+    <script>
+      function hideResult() {
+        document.getElementById("result").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

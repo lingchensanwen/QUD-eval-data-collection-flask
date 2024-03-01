@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      height: 100vh;
+      display: flex;
+    }
+    .left-side, .right-side {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .fancy-textbox {
+      overflow-y: auto;
+      width: 90%;
+      height: 90%;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      resize: none;
+      outline: none;
+      color: #333333;
+      transition: all 0.3s ease;
+    }
+    .fancy-textbox::placeholder {
+      color: #a9a9a9;
+    }
+        #popup-button {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 10px;
+          font-size: 16px;
+          background-color: #2196F3;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          z-index: 9999;
+        }
+
+        #popup-instructions {
+          position: fixed;
+          top: 0px;
+          right: 20px;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          max-width: 1000px;
+          display: none;
+          z-index: 9998;
+          background-color: #e7eff6;
+          box-shadow: 0px 0px 10px #e7eff6;
+          transition: all 0.2s ease-in-out;
+        }
+
+        #popup-instructions p {
+          font-size: 14px;
+          line-height: 1.5;
+          margin: 0;
+        }
+
+
+        .container {
+          display: flex;
+          flex-wrap: wrap;
+          height: 200vh;
+        }
+
+        .left-section { 
+          flex-basis: 50%;
+          background-color: #ffffff;
+          padding: 20px;
+          box-sizing: border-box;
+          position: fixed;
+          overflow: scroll;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 50%;
+        }
+
+        .right-section {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          width: 50%;
+          background-color: #f6f6f6;
+          padding: 20px;
+          box-sizing: border-box;
+          overflow: scroll;
+        }
+
+
+        .scrollable {
+          overflow-y: auto;
+        }
+
+        .question {
+          margin-bottom: 10px;
+          padding: 10px;
+          border-radius: 5px;
+          background-color: #ffffff;
+          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+          transition: all 0.2s ease-in-out;
+        }
+
+        .question {
+          background-color: #f6f6f6;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .question ul {
+          max-height: 1000px;
+          transition: all 0.2s ease-in-out;
+        }
+        .bold-question {
+          font-weight: bold;
+        }
+
+        .question h3 {
+          margin-top: 0;
+          margin-bottom: 10px;
+        }
+
+        .question ul {
+          max-height: 0px; /* Set a large enough value to display all subquestions */
+          overflow: hidden;
+          overflow-y: auto;
+          list-style-type: none;
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-left: 20px;
+          padding-right: 20px;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .question ul li {
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+        .question-text {
+            font-weight: bold;
+        }
+        .expanded {
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .expanded ul {
+          max-height: 1000px;
+        }
+        .highlight-line {
+          font-weight: bold;
+          background-color: #adcbe3;
+          box-shadow: 0px 0px 10px #adcbe3;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .highlight-between {
+          color: #999;
+          background-color: #f5f5f5;
+          /* font-weight: bold;
+          background-color: #adcbe3;
+          box-shadow: 0px 0px 10px #adcbe3;
+          transition: all 0.2s ease-in-out;
+          opacity: 0.5; */
+        }
+
+        .highlight-anchor-answer {
+          font-weight: bold;
+          background-color: #ffeead;
+          box-shadow: 0px 0px 15px #ffeead;
+          transition: all 0.2s ease-in-out;  
+          text-decoration: underline;
+        }
+        .highlight-anchor{
+          font-weight: bold;
+          background-color: #ffeead;
+          box-shadow: 0px 0px 15px #ffeead;
+          transition: all 0.2s ease-in-out;  
+          text-decoration: underline;
+        }
+        .highlight-answer {
+/*          font-weight: bold;*/
+          background-color: #f6abb6;
+          box-shadow: 0px 0px 10px #f6abb6;
+          transition: all 0.2s ease-in-out;  
+        }
+        .question-highlight {
+            background-color: lightblue;
+        }
+        .related-sentence {
+            background-color: yellow;
+        }
+
+        .gray-out-line {
+          color: #999;
+          background-color: #f5f5f5;
+        }
+
+        .question:hover .highlight {
+          background-color: #ffd600;
+          box-shadow: 0px 0px 10px #ffd600;
+        }
+
+        .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+      #previous-button {
+        position: fixed;
+        bottom: 20px;
+        right: 280px;
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Adds a shadow effect */
+      }
+      #previous-button:hover {
+        background-color: #008CBA; 
+      }
+      #next-button {
+        position: fixed;
+        bottom: 20px;
+        right: 170px;
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Adds a shadow effect */
+      }
+      #next-button:hover {
+        background-color: #008CBA; 
+      }
+      #submit-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 40px;
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Adds a shadow effect */
+      }
+
+      #submit-btn:hover {
+        background-color: #008CBA; /* Blue */
+      }
+
+    </style>
+    <title>Essay Context and Questions</title>
+</head>
+<body>
+  <div class="tooltip-container">
+  <button id="popup-button"> Open new tab for instructions!</button>
+  <span class="tooltip-text"></span>
+</div>
+    <div class="container">
+        <div class="left-section">
+            <h2>Essay Context in Article #{{article_number}}</h2>
+            <!-- <div class="scrollable"> -->
+                {% for line_number, line in essay_context.items() %}
+                    <span id="line{{ line_number }}" class="line">{{ line }}</span><br>
+                {% endfor %}
+            <!-- </div> -->
+        </div>
+        <form method="POST" action="/submit">
+        <div class="right-section">
+            <h2>Questions</h2>
+            <div>
+            <ul>
+                {% for question in questions %}
+                    <li>
+                        <div class="question" onmouseover="highlightRange({{ question.sentences }})">
+                            <span class="highlight-anchor anchor">Anchor id: {{question.sentences[0]}}</span><br>
+                            <span class="question-text"> Question#{{question.id}} - {{ question.text }}</span><br>
+                            <span class="highlight-answer answer">
+                            Answer id: {{question.sentences[1]}}</span><br>
+                            <ul class="scrollable">
+                            {% for subquestion in question.subquestions[:-1] %}
+                            <br>
+                            <h4>
+                              <!-- {% if subquestion.id == 0 %}
+                                  Multi-question?
+                              {% else %} -->
+                              Criteria {{ subquestion.id }}:
+                              <!-- {% endif %} -->
+                              </h4>
+                              {% if subquestion.id == 3 %}
+                                  {% set bold_text = 'Does the question contain new concepts that a reader would be hard to come up with?' %}
+                                  {% set regular_text = '(By “new concepts”, we mean concepts that cannot be easily inferred by world knowledge from existing ones).' %}
+                                  <p><b>{{ bold_text }}</b>{{ regular_text }}</p>
+                              {% else %}
+                                  {% if subquestion.id != 1 %}
+                                      <p>{{ subquestion.text }}</p>
+                                  {% endif %}
+                              {% endif %}
+                                <ul class="subquestions">
+                                    {% for option in subquestion.options %}
+                                        <li>
+                                            <label><input type="radio" name="question{{ question.id }}-subquestion{{ subquestion.id }}" value="{{ option }}" data-question="{{ question.id }}" data-subquestion="{{ subquestion.id }}" onchange="highlightQuestion(this)"> {{ option }}</label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% if subquestion.id == 1 %}
+                                <input type="checkbox" id="multiple_question_checkbox" name="question{{ question.id }}-multiQ-checked" onclick="event.stopPropagation();">
+                                <label for="multiple_question_checkbox">Does the question contain multiple questions?</label>
+                                {% endif %}
+                              </br>
+                            {% endfor %}
+                            <div>
+                            {% for subquestion in question.subquestions[-1:] %}
+                            <br>
+                            <h4>Other Issues:</h4>
+                            <p>{{ subquestion.text }}</p>
+                            <ul class="subquestions">
+                                {% for option in subquestion.options[:-1] %}
+                                    <li>
+                                        <label><input type="radio" name="question{{ question.id }}-subquestion{{ subquestion.id }}" value="{{ option }}" data-question="{{ question.id }}" data-subquestion="{{ subquestion.id }}"> {{ option }}</label>
+                                    </li>
+                                {% endfor %}
+                                <p> Anything else</p>
+                                <textarea class="fancy-textbox" name="question{{ question.id }}-extra-info" placeholder="Any other option/comment you have about this question"></textarea>  
+                            </ul>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+            <!-- <button type="submit">Submit</button> -->
+          <!-- </div> -->
+          <button id="submit-btn">Submit</button>
+        </form>
+        <div><form action="previous" method="post">
+          <button id="previous-button">Previous</button>
+        </form>
+      </div>
+      <div>
+        <form action="next" method="post">
+          <button id="next-button">Next</button>
+        </form>
+      </div>
+</div>
+    <script>
+      document.getElementById("popup-button").addEventListener("click", function() {
+          window.open("{{ url_for('instructions') }}", "_blank");
+      });
+    </script>
+    <script>
+
+    const textbox = document.getElementById('textbox');
+    const placeholder = document.querySelector('.placeholder');
+
+    textbox.addEventListener('input', () => {
+      if (textbox.value === '') {
+        placeholder.classList.remove('hidden');
+      } else {
+        placeholder.classList.add('hidden');
+      }
+    });
+
+
+    function highlightRange(range, questionText) {
+      var startNumber = range[0];
+      var endNumber = range[1];
+      var lines = document.querySelectorAll('[id^="line"]');
+      for (var i = 0; i < lines.length; i++) {
+        var lineNumber = parseInt(lines[i].id.slice(4));
+        if(lineNumber == startNumber){
+            lines[i].classList.remove('highlight-line');
+            lines[i].classList.remove('gray-out-line');
+            lines[i].classList.remove('highlight-between');
+            lines[i].classList.remove('highlight-answer')
+            lines[i].classList.add('highlight-anchor');
+            continue;
+        }
+        if(lineNumber == endNumber){
+            lines[i].classList.remove('highlight-line');
+            lines[i].classList.remove('gray-out-line');
+            lines[i].classList.remove('highlight-between');
+            lines[i].classList.remove('highlight-anchor')
+            lines[i].classList.add('highlight-answer');
+            continue;          
+        }
+        else if (lineNumber < startNumber) {
+          lines[i].classList.remove('gray-out-line');
+          lines[i].classList.remove('highlight-anchor');
+          lines[i].classList.remove('highlight-answer');
+          lines[i].classList.remove('highlight-between');
+          lines[i].classList.add('highlight-line');
+        } 
+        else if (lineNumber > startNumber && lineNumber < endNumber){
+          lines[i].classList.remove('highlight-line')
+          lines[i].classList.remove('gray-out-line');
+          lines[i].classList.remove('highlight-anchor');
+          lines[i].classList.remove('highlight-answer');
+          lines[i].classList.add('highlight-between');  
+        }
+        else {
+          // Line is outside the range, so add gray-out style
+          lines[i].classList.remove('highlight-anchor');
+          lines[i].classList.remove('highlight-answer');
+          lines[i].classList.remove('highlight-line');
+          lines[i].classList.remove('highlight-between');
+          lines[i].classList.add('gray-out-line');
+        }
+      }
+    }
+
+    function highlightQuestion(radio) {
+      var subquestions = radio.closest(".question").querySelectorAll(".subquestions");
+      var allSubquestionsSelected = true;
+      for (var i = 0; i < subquestions.length-1; i++) {
+        var subquestion = subquestions[i];
+        var subquestionID = subquestion.querySelector("input[type=radio]").name.split("-")[1];
+        var subquestionOptions = subquestion.querySelectorAll("input[type=radio]");
+        var isSubquestionSelected = false;
+        //if first subquestion is "No", skip the rest annotation
+        if(i == 0 && subquestionOptions[1].checked){
+          allSubquestionsSelected = true;
+          break;
+        }
+        for (var j = 0; j < subquestionOptions.length; j++) {
+          if (subquestionOptions[j].checked) {
+            isSubquestionSelected = true;
+            break;
+          }
+        }
+        if (!isSubquestionSelected) {
+          allSubquestionsSelected = false;
+          break;
+        }
+      }
+      var questionID = radio.name.split("-")[0];
+      var question = radio.closest(".question");
+      if (allSubquestionsSelected) {
+        question.classList.add("question-highlight");
+      } else {
+        question.classList.remove("question-highlight");
+      }
+      return allSubquestionsSelected;
+    }
+
+
+
+    function submitAnswers() {
+      var answers = {};
+      var radioButtons = document.querySelectorAll('input[type="radio"]');
+      radioButtons.forEach(function(radioButton) {
+        if (radioButton.checked) {
+          var questionId = radioButton.dataset.question;
+          var subquestionId = radioButton.dataset.subquestion;
+          var option = radioButton.value;
+          if (!answers[questionId]) {
+            answers[questionId] = {};
+          }
+          answers[questionId][subquestionId] = option;
+        }
+      });
+      console.log(answers);
+    }
+    var submitBtn = document.querySelector('#submit-btn');
+    submitBtn.addEventListener('click', submitAnswers);
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var questions = document.querySelectorAll('.question');
+
+        questions.forEach(function(question) {
+          question.addEventListener('click', function(event) {
+            if (!event.target.closest('.subquestions')) {
+              this.classList.toggle('expanded');
+            }
+          });
+        });
+      });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px auto;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    #copyBtn {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+        margin: 10px;
+        border-radius: 4px;
+    }
+    #copyBtn:hover {
+        background-color: #45a049;
+    }
+    #go-back {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  #go-back:hover, #go-back:focus {
+      background-color: #0d8ae2;
+  }
+</style>
+  <head>
+    <title>Feedback</title>
+  </head>
+  <body>
+    <h1>Upload CSV file</h1>
+    {% for message in get_flashed_messages() %}
+      <p>{{ message }}</p>
+    {% endfor %}
+    <form action="{{ url_for('load_result') }}" method="POST" enctype="multipart/form-data">
+      <label for="file">CSV file:</label>
+      <input type="file" name="file" id="file" accept=".csv">
+      <br>
+      <label for="survey_code">Survey code:</label>
+      <input type="text" name="survey_code" id="survey_code">
+      <br>
+      <input type="submit" value="Upload">
+    </form>
+<table>
+        <thead>
+            <tr>
+                <th>Questions</th>
+                {% for main_key, sub_dict in answer_dict.items() %}
+                    {% if loop.first %}
+                    {% set keys_list = sub_dict.keys()|list %}
+                        {% for sub_key in keys_list[:-3] %}
+                            <th>Criteria {{ sub_key[-2] }}</th>
+                        {% endfor %}
+                        <th> Other Issues </th>
+                        <th> Other Issues(typing) </th>
+                        <th> Multi-question</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for main_key, sub_dict in answer_dict.items() %}
+                <tr>
+                    <td>Question {{ main_key.split("-")[1][:-1] }}</td>
+                    {% for sub_key, sub_value in sub_dict.items() %}
+                        <td>{{ sub_value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Override Answer</h2>
+<form action="{{ url_for('override_answer') }}" method="POST">
+  <label for="override_question">Override question:</label>
+  <input type="text" name="override_question" id="override_question">
+  <br>
+  <label for="override_criteria">Override criteria:</label>
+  <input type="text" name="override_criteria" id="override_criteria">
+  <br>
+  <label for="override_result">Override result:</label>
+  <input type="text" name="override_result" id="override_result">
+  <br>
+  <input type="hidden" name="survey_code" id="survey_code" value="{{ survey_code }}">
+  <input type="submit" value="Override">
+</form>
+
+    <script>
+        function copyToClipboard() {
+            const code = document.getElementById('mturkCode').innerText;
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('MTurk Code copied to clipboard!');
+        }
+    </script>
+<br>
+  </body>
+</html>

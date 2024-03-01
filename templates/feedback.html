@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copy MTurk Code & Display Answers</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px auto;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    #copyBtn {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+        margin: 10px;
+        border-radius: 4px;
+    }
+    #copyBtn:hover {
+        background-color: #45a049;
+    }
+    #go-back {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  #go-back:hover, #go-back:focus {
+      background-color: #0d8ae2;
+  }
+</style>
+</head>
+<body>
+    <h3>MTURK_CODE: <span id="mturkCode">{{survey_code}}</span></h3>
+    <button id="copyBtn" onclick="copyToClipboard()">Copy to Clipboard</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Questions</th>
+                {% for main_key, sub_dict in answer_dict.items() %}
+                    {% if loop.first %}
+                    {% set keys_list = sub_dict.keys()|list %}
+                        {% for sub_key in keys_list[:-3] %}
+                            <th>Criteria {{ sub_key[-2] }}</th>
+                        {% endfor %}
+                        <th> Other Issues </th>
+                        <th> Other Issues(typing) </th>
+                        <th> Multi-question</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for main_key, sub_dict in answer_dict.items() %}
+                <tr>
+                    <td>Question {{ main_key.split("-")[1][:-1] }}</td>
+                    {% for sub_key, sub_value in sub_dict.items() %}
+                        <td>{{ sub_value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function copyToClipboard() {
+            const code = document.getElementById('mturkCode').innerText;
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('MTurk Code copied to clipboard!');
+        }
+    </script>
+<br>
+<button id="go-back" onclick="location.href='/';">Go Back to Annotation</button>
+</br>
+</body>
+</html>

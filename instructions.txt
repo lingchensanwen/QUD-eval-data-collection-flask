@@ -1,0 +1,60 @@
+This task investigates the capability of AI to generate good reading comprehension questions.
+
+
+Imagine you are reading the following article where the first few sentences go like this:
+
+
+1 The stock market's woes spooked currency traders but prompted a quiet little party among bond investors.
+2 Prices of long-term Treasury bonds moved inversely to the stock market as investors sought safety amid growing evidence the economy is weakening.
+
+
+At this point, you may want to ask the question: How much did the prices of long-term Treasury bonds increase? This question is answered in sentence 7:
+
+
+7 At its strongest, the Treasury's benchmark 30-year bond rose more than a point, or more than $10 for each $1,000 face amount.
+
+
+Indeed, we can view sentences in a document as answers to questions that come from the readers, it’s just that these questions are not explicitly stated. The goal of the AI model is to recover these questions and ask them explicitly. Having these questions will be helpful for readers who have trouble understanding the document.
+
+
+Clearly, the question above is a good one: it is anchored in the second sentence, not overly generic, and sentence 7 is an answer that fits right in. But not all AI-generated questions are as good; consider this one: How many points did Treasury’s benchmark 30-year bonds increase? This question is still answered by sentence 7, but it is odd to imagine a reader coming up with this question from sentence 2, because the notion of “points” (and maybe even “30-year”) has not been introduced and only very expert readers would be familiar with this! On the other hand, we also don’t want questions like, What happened next? This question is way too generic to be useful for a puzzled reader trying to understand the text.
+
+
+To define a few terms: we call sentence 2 the anchor sentence, i.e., where the questions could reasonably arise from, and sentence 7 is the answer sentence. Sentences before the anchor form the question context. 
+
+
+We invite you to judge the quality of the questions based on the following criteria:
+
+
+1. Does the question make sense? Examples of bad questions that don’t make sense are: questions that are badly formed (e.g., contain too many language errors or aren’t complete), or questions that are irrelevant to the article.
+
+
+2. Does the “answer sentence” actually answer this question? Note that there are three possibilities here:
+   1. Best case: the “answer sentence”’s main content answers this question
+
+
+   2. Unfocused case: the “answer sentence” isn’t really about answering the question, but some parts of the answer sentence do answer the question.
+E.g., Sentence 2 isn’t about the evidence of a weakening economy, hence it is an “unfocused” answer to the question “Is the economy weakening?”
+
+
+   3. Not-an-answer case: the “answer sentence” is not answering the question.
+
+
+3. Does the question contain new concepts that a reader would be hard to come up with? (By “new concepts”, we mean concepts that cannot be easily inferred by world knowledge from existing ones). There are several possibilities here as well:
+   1. This question does not contain new concepts.
+
+
+   2. Answer leakage: The question contains new concepts that are in the answer sentence AND not in the anchor sentence or the question context. “How many points did Treasury’s benchmark 30-year bonds increase?” would be a question that leaks new concepts in the answer sentence.
+
+
+   3. Context leakage: The question contains new concepts that are not in the anchor sentence or the question context, but can be found in other parts of the document.
+
+
+   4. Hallucination: The question contains new concepts not in the article.
+
+
+4. Is this question grounded well in the anchor sentence? Here we ask you to judge from a scale:
+   1. Key parts of the question is grounded in the anchor sentence
+   2. Some parts of the question is grounded in the anchor sentence
+   3. The question is too generic and can rise from many sentences
+   4. The anchor should be another sentence
