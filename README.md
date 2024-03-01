@@ -31,4 +31,5 @@ We highlight important parts of QUD (anchor, answer) and greyed out things else.
 You need to set the url to your database url under app.py.
 
 You can install the dependency from <code>conda env create -f environment.yml -p xxx </code>
-Run <code>flask run</code>, you will host a webpage for your data collection. In our implementation, we use heroku to host it. 
+
+Run <code>!flask run</code>, you will host a webpage for your data collection. In our implementation, we use heroku to host it. 
